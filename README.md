@@ -96,7 +96,7 @@ Vous avez :
 
 ### data_pgn
 
-Contient les **5675** parties que j'ai eu à jouer sur mon compte `JRRZF` sur la plateforme `chess.com`.
+Contient les **5675** parties que j'ai eu à jouer sur mon compte personnel sur la plateforme `chess.com`.
 
 Le fichier est enregistré sous un format `.pgn` (**P**ortable **G**ame **N**otation) dont la structure est comme ceci :
 
@@ -105,14 +105,14 @@ Le fichier est enregistré sous un format `.pgn` (**P**ortable **G**ame **N**ota
 [Site "Chess.com"]    <-- site du jeu
 [Date "2025.07.22"]   <-- date à laquelle la partie a été jouée
 [Round "-"]   <-- pas de valeur parce que c'était pas en tournoi
-[White "Weah760800"]  <-- utilisateur avec les pièces blanches
-[Black "JRRZF"]  <-- utilisateur avec les pièces noires
+[White "user_name"]  <-- utilisateur avec les pièces blanches
+[Black "user_name"]  <-- utilisateur avec les pièces noires
 [Result "0-1"]   <-- résultats de la partie
 [WhiteElo "1850"]  <-- le classement elo du joueur aux blancs
 [BlackElo "1844"]  <-- le classement elo du joueur aux noirs
 [TimeControl "180"]   <-- la cadence de la partie (180 secondes ici)
 [EndTime "17:22:21 GMT+0000"]  <-- l'heure à laquelle la partie s'est terminée
-[Termination "JRRZF won by checkmate"]   <-- Comment la partie s'est terminée
+[Termination "name won by checkmate"]   <-- Comment la partie s'est terminée
 
 1. d4 e6 2. Nf3 d5 3. Bf4 Nf6 4. e3 c5 5. Be2 Nc6 6. dxc5 Bxc5 7. c3 Qb6 8. Qc2
 Bd7 9. Be5 Nxe5 10. Nxe5 Bd6 11. Nxd7 Nxd7 12. O-O O-O 13. Nd2 Rac8 14. Nf3 h6
