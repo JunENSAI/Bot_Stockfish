@@ -209,3 +209,5 @@ __marimo__/
 .vscode/
 
 data_pgn/user_pgn.pgn
+
+jr_bot/

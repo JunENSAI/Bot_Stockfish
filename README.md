@@ -112,7 +112,7 @@ Le fichier est enregistré sous un format `.pgn` (**P**ortable **G**ame **N**ota
 [BlackElo "1844"]  <-- le classement elo du joueur aux noirs
 [TimeControl "180"]   <-- la cadence de la partie (180 secondes ici)
 [EndTime "17:22:21 GMT+0000"]  <-- l'heure à laquelle la partie s'est terminée
-[Termination "name won by checkmate"]   <-- Comment la partie s'est terminée
+[Termination "user_name won by checkmate"]   <-- Comment la partie s'est terminée
 
 1. d4 e6 2. Nf3 d5 3. Bf4 Nf6 4. e3 c5 5. Be2 Nc6 6. dxc5 Bxc5 7. c3 Qb6 8. Qc2
 Bd7 9. Be5 Nxe5 10. Nxe5 Bd6 11. Nxd7 Nxd7 12. O-O O-O 13. Nd2 Rac8 14. Nf3 h6
