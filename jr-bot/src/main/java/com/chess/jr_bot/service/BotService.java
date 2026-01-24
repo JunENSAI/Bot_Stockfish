@@ -4,41 +4,65 @@ import java.util.List;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.chess.jr_bot.entity.MoveEntity;
 import com.chess.jr_bot.repository.MoveRepository;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class BotService {
 
     private final MoveRepository moveRepository;
+    private final RestTemplate restTemplate;
     private final Random random = new Random();
+    
+    // URL du microservice Python
+    private final String AI_SERVICE_URL = "http://localhost:5000/analyze?fen=";
 
-    public BotService(MoveRepository moveRepository) {
+    public BotService(MoveRepository moveRepository, RestTemplate restTemplate) {
         this.moveRepository = moveRepository;
+        this.restTemplate = restTemplate;
     }
 
     public String decideMove(String currentFen) {
-        // 1. Chercher si on connait cette position dans la BDD
-        String fenPosition = currentFen.split(" ")[0]; 
+        String fenKey = currentFen.split(" ")[0];
         
-        List<MoveEntity> knownMoves = moveRepository.findByFenStartingWith(fenPosition);
+        // 1. RECHERCHE EN MÉMOIRE (Mon style)
+        List<MoveEntity> knownMoves = moveRepository.findByFenStartingWith(fenKey);
 
-        if (knownMoves.isEmpty()) {
-            return "UNKNOWN";
+        if (!knownMoves.isEmpty()) {
+            MoveEntity memoryMove = knownMoves.get(random.nextInt(knownMoves.size()));
+
+            if (memoryMove.getEvalScore() != null && memoryMove.getEvalScore() > -200) {
+                System.out.println("MODE MÉMOIRE : " + memoryMove.getPlayedMove());
+                return memoryMove.getPlayedMove();
+            }
+            System.out.println("MODE CORRECTION : Coup historique jugé mauvais. Appel à l'IA.");
+        } else {
+            System.out.println("MODE INCONNU : Position nouvelle. Appel à l'IA.");
         }
 
-        // 2. Sélectionner un coup parmi l'historique
-        MoveEntity selectedMove = knownMoves.get(random.nextInt(knownMoves.size()));
+        // 2. APPEL À L'IA (Stockfish via Python)
+        return askStockfish(currentFen);
+    }
 
-        
-        System.out.println("Position connue ! Coup historique : " + selectedMove.getPlayedMove());
-        
-        if (selectedMove.getEvalScore() != null && selectedMove.getEvalScore() < -150) {
-             System.out.println("Correction : Le coup historique était mauvais. Utilisation de Stockfish.");
-             return selectedMove.getStockfishBestMove();
+    private String askStockfish(String fen) {
+        try {
+            String response = restTemplate.getForObject(AI_SERVICE_URL + fen, String.class);
+            
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response);
+            
+            String bestMove = root.path("best_move").asText();
+            System.out.println("STOCKFISH SUGGÈRE : " + bestMove);
+            
+            return bestMove;
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "0000";
         }
-
-        return selectedMove.getPlayedMove();
     }
 }

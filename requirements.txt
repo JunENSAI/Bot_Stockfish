@@ -1,3 +1,4 @@
 python-chess
 pandas
 python-dotenv
+flask
