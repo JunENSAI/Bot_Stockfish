@@ -1,0 +1,29 @@
+/* --- Login --- */
+.login-box {
+    background: var(--bg-card);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    width: 300px;
+    text-align: center;
+}
+.form-group { margin-bottom: 15px; text-align: left; }
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    background: #2b2b2b;
+    border: 1px solid #555;
+    color: white;
+    border-radius: 4px;
+}
+.btn-login {
+    width: 100%;
+    padding: 10px;
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.error-msg { color: var(--danger); font-size: 0.9em; }
