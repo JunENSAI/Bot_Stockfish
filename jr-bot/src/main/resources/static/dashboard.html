@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div style="width: 80%; margin-top: 20px; display: flex; justify-content: space-between;">
+        <h2 id="welcomeMsg">Bonjour</h2>
+        <button class="btn-secondary" onclick="logout()">Déconnexion</button>
+    </div>
+
+    <div class="grid-menu">
+        <div class="card" onclick="window.location.href='game.html'">
+            <div class="icon">♟️</div>
+            <h3>JOUER</h3>
+            <p>Affronter le Bot</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='profile.html'">
+            <div class="icon">📊</div>
+            <h3>PROFIL</h3>
+            <p>Mes Statistiques</p>
+        </div>
+
+        <div class="card" onclick="alert('Module Ouvertures : En construction via analyse DB')">
+            <div class="icon">📖</div>
+            <h3>OUVERTURES</h3>
+            <p>Mon répertoire</p>
+        </div>
+
+        <div class="card" onclick="window.location.href='history.html'">
+            <div class="icon">📜</div>
+            <h3>PARTIES</h3>
+            <p>Revoir l'historique</p>
+        </div>
+    </div>
+
+    <script>
+        const user = localStorage.getItem("username");
+        if (!user) window.location.href = "index.html";
+        document.getElementById("welcomeMsg").innerText = "Bonjour, " + user;
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

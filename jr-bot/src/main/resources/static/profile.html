@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button onclick="window.location.href='dashboard.html'" style="position: absolute; top: 20px; left: 20px;">⬅ Retour</button>
+    <h1>Mon Profil</h1>
+
+    <div style="background: #3c3c3c; padding: 20px; width: 60%; border-radius: 10px; margin-top: 20px;">
+        <h2>Statistiques Globales</h2>
+        <div style="display: flex; justify-content: space-around; font-size: 1.2rem;">
+            <div style="color: #4caf50;">Victoires : <span id="wins">0</span></div>
+            <div style="color: #e57373;">Défaites : <span id="losses">0</span></div>
+            <div style="color: #90a4ae;">Nulles : <span id="draws">0</span></div>
+        </div>
+        <p>Total jouées : <span id="total">0</span></p>
+    </div>
+
+    <script>
+        async function loadStats() {
+            const user = localStorage.getItem("username");
+            const res = await fetch(`/api/data/stats/${user}`);
+            const data = await res.json();
+
+            document.getElementById("wins").innerText = data.wins;
+            document.getElementById("losses").innerText = data.losses;
+            document.getElementById("draws").innerText = data.draws;
+            document.getElementById("total").innerText = data.totalGames;
+        }
+        loadStats();
+    </script>
+</body>
+</html>

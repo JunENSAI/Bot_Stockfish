@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Jeu - JRRZF</title>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <button onclick="window.location.href='dashboard.html'" style="position: absolute; top: 20px; left: 20px;">⬅ Dashboard</button>
+    
+    <h1>Arène de Jeu</h1>
+    <h3 id="status">En attente...</h3>
+
+    <div id="setupControls">
+        <button class="btn-primary" onclick="initGame('white')">Blancs</button>
+        <button class="btn-secondary" onclick="initGame('black')">Noirs</button>
+    </div>
+
+    <div id="board"></div>
+
+    <div class="controls" id="gameControls" style="display: none;">
+        <button class="btn-danger" onclick="endGame('resign')">🏳️ Abandonner</button>
+        <button class="btn-secondary" onclick="endGame('draw')">🤝 Proposer Nulle</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    
+    <script>
+        let board = null;
+        let game = new Chess();
+        let userColor = 'white';
+        const username = localStorage.getItem("username");
+
+        function initGame(color) {
+            userColor = color;
+            game = new Chess();
+            document.getElementById("setupControls").style.display = "none";
+            document.getElementById("gameControls").style.display = "flex";
+            document.getElementById("status").innerText = "Partie en cours...";
+            
+            // CONFIGURATION DE L'ECHIQUIER
+            board = Chessboard('board', {
+                draggable: true,
+                position: 'start',
+                orientation: color,
+                onDragStart: onDragStart,
+                onDrop: handleMove,
+                onSnapEnd: onSnapEnd, 
+                pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+            });
+
+            if (color === 'black') setTimeout(makeBotMove, 500);
+        }
+
+        function onDragStart(source, piece) {
+            if (game.game_over()) return false;
+            if ((userColor === 'white' && piece.search(/^b/) !== -1) ||
+                (userColor === 'black' && piece.search(/^w/) !== -1)) {
+                return false;
+            }
+        }
+
+        function handleMove(source, target) {
+            const move = game.move({ from: source, to: target, promotion: 'q' });
+            if (move === null) return 'snapback';
+            
+            setTimeout(makeBotMove, 250);
+        }
+
+        function onSnapEnd() {
+            board.position(game.fen());
+        }
+
+        async function makeBotMove() {
+            if (game.game_over()) return checkGameOver();
+
+            document.getElementById("status").innerText = "Le bot réfléchit...";
+
+            const url = `/api/bot/move?fen=${encodeURIComponent(game.fen())}`;
+            const res = await fetch(url);
+            const botMove = await res.text();
+            
+            game.move(botMove, { sloppy: true });
+            board.position(game.fen());
+            
+            document.getElementById("status").innerText = "À vous de jouer !";
+            checkGameOver();
+        }
+
+        function checkGameOver() {
+            if (game.in_checkmate()) {
+                const winner = game.turn() === 'w' ? "Noirs" : "Blancs";
+                saveGame(winner === "Blancs" ? "1-0" : "0-1");
+                alert("Echec et Mat ! Vainqueur : " + winner);
+            } else if (game.in_draw()) {
+                saveGame("1/2-1/2");
+                alert("Match Nul !");
+            }
+        }
+
+        function endGame(action) {
+            let result = "1/2-1/2";
+            if (action === 'resign') {
+                result = userColor === 'white' ? "0-1" : "1-0";
+                alert("Vous avez abandonné.");
+            } else {
+                alert("Match nul conclu.");
+            }
+            saveGame(result);
+        }
+
+        async function saveGame(result) {
+            const pgn = game.pgn();
+            await fetch('/api/platform/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    whitePlayer: userColor === 'white' ? username : "Bot-JRRZF",
+                    blackPlayer: userColor === 'black' ? username : "Bot-JRRZF",
+                    result: result,
+                    pgn: pgn,
+                    timeControl: "Blitz" 
+                })
+            });
+            window.location.href = "dashboard.html";
+        }
+    </script>
+</body>
+</html>

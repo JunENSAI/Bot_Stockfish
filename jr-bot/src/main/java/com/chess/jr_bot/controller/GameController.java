@@ -2,6 +2,7 @@ package com.chess.jr_bot.controller;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -22,12 +23,13 @@ import com.chess.jr_bot.repository.GameRepository;
 @CrossOrigin(origins = "*")
 public class GameController {
 
-    private final GameRepository GameRepository;
+    private final GameRepository gameRepository;
 
-    public GameController(GameRepository GameRepository) {
-        this.GameRepository = GameRepository;
+    public GameController(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
 
+    // --- 1. SAUVEGARDE  ---
     @PostMapping("/save")
     public ResponseEntity<?> saveGame(@RequestBody GameSave request) {
         try {
@@ -39,7 +41,7 @@ public class GameController {
             game.setTimeControl(request.getTimeControl() != null ? request.getTimeControl() : "Standard");
             game.setDatePlayed(LocalDateTime.now());
 
-            GameRepository.save(game);
+            gameRepository.save(game);
 
             return ResponseEntity.ok(Map.of("message", "Partie sauvegardée avec succès !"));
         } catch (Exception e) {
@@ -50,24 +52,36 @@ public class GameController {
 
     @GetMapping("/stats")
     public ResponseEntity<?> getPlayerStats(@RequestParam String username) {
-        long platformGames = GameRepository.countTotalGames(username);
-        long platformWins = GameRepository.countWins(username);
+        List<GameEntity> games = gameRepository.findByWhitePlayerOrBlackPlayer(username, username);
 
-        long historicalGames = 5736; 
-        long historicalWins = 2000;
+        int wins = 0;
+        int losses = 0;
+        int draws = 0;
 
-        long totalGames = historicalGames + platformGames;
-        long totalWins = historicalWins + platformWins;
-        
-        double winRate = totalGames > 0 ? (double) totalWins / totalGames * 100 : 0;
+        for (GameEntity g : games) {
+            if ("1/2-1/2".equals(g.getResult())) {
+                draws++;
+            } else if ((username.equals(g.getWhitePlayer()) && "1-0".equals(g.getResult())) ||
+                       (username.equals(g.getBlackPlayer()) && "0-1".equals(g.getResult()))) {
+                wins++;
+            } else {
+                losses++; 
+            }
+        }
 
         Map<String, Object> stats = new HashMap<>();
         stats.put("username", username);
-        stats.put("total_games", totalGames);
-        stats.put("total_wins", totalWins);
-        stats.put("win_rate", String.format("%.2f", winRate));
-        stats.put("platform_games_played", platformGames);
+        stats.put("totalGames", games.size());
+        stats.put("wins", wins);
+        stats.put("losses", losses);
+        stats.put("draws", draws);
 
         return ResponseEntity.ok(stats);
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<GameEntity>> getPlayerHistory(@RequestParam String username) {
+        List<GameEntity> history = gameRepository.findTop50ByWhitePlayerOrBlackPlayerOrderByDatePlayedDesc(username, username);
+        return ResponseEntity.ok(history);
     }
 }

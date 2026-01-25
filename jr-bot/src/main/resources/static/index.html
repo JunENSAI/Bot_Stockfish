@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion - JRRZF Chess</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div style="margin-top: 100px; text-align: center;">
+        <h1>♟️ JRRZF Bot</h1>
+        <div style="background: #3c3c3c; padding: 40px; border-radius: 10px;">
+            <input type="text" id="username" placeholder="Pseudo" style="padding: 10px; width: 100%; margin-bottom: 10px;"><br>
+            <input type="password" id="password" placeholder="Mot de passe" style="padding: 10px; width: 100%; margin-bottom: 20px;"><br>
+            <button class="btn-primary" onclick="login()">Se connecter</button>
+            <p id="error" style="color: red; display: none;">Erreur de connexion</p>
+        </div>
+    </div>
+
+    <script>
+        async function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: user, password: pass })
+                });
+
+                if (response.ok) {
+                    localStorage.setItem("username", user);
+                    window.location.href = "dashboard.html";
+                } else {
+                    document.getElementById("error").style.display = "block";
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Erreur serveur");
+            }
+        }
+    </script>
+</body>
+</html>
