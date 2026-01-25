@@ -1,4 +1,10 @@
-Stockfish est le bot ultime en terme de jeux d'echecs. Il est opensource donc quoi de mieux que de l'entraîner sur mes propres donnés pour apprendre avec lui les bons coups.
+Stockfish est le bot ultime en terme de jeux d'echecs. Il est opensource donc quoi de mieux que de s'entraîner avec lui sachant mes propres parties pour apprendre avec lui les bons coups.
+
+- **Côté affrontement** : Stockfish connait à travers mes parties les coups que j'ai joués donc le bot est constraint de jouer ce que j'ai joué tant que les coups existent dans la base `moves.csv`. Une fois leconnu est inconnu il utilise sa force calibré à `depth = 10` (environ 1800) pour m'affronter.
+
+- **Côté évaluation** : Stockfish a évalué plus de 5700 de mes parties, en ce sens il sait quel mauvais ou bon coup j'ai joué dans une partie ou une autre. Une fonctionnalité à ajouter dans l'application quand l'affrontement est terminé c'est de pouvoir analyser la partie avec son aide.
+
+- **Côté entraînement** : Sachant mes principales ouvertures et défenses j'espère qu'il m'aide à m'améliorer sur ces ouvertures et défenses. Pour rendre plus consistent mon style de jeu il proposera des coups sur la position. Aussi, peut être proposé des entraînement tel qu'en voyant une position gagnante que j'ai raté après (je pense à une sorte de puzzle tiré des parties où j'ai eu l'avantage mais je l'ai laissé passer).
 
 # Configuration minimale
 
@@ -276,3 +282,55 @@ On pourrait créer les notions orientées objets directement à travers Python m
 
 
 ## React JS
+
+### Configuration et Installation
+
+Pour créer et lancer un projet React, voici les étapes à suivre :
+
+- Création :
+    ```bash
+    npm create vite@latest frontend-chess -- --template react
+    ```
+- Installation package (`package.json`) :
+    ```bash
+    cd frontend-chess
+    npm install
+    ```
+- Package additionnels :
+    ```bash
+    npm install chessboardjsx chess.js axios react-router-dom prop-types
+    ```
+- Lancer l'application :
+    ```bash
+    npm run dev
+    ```
+En clonant le repo vous aurez pas besoin de passer par toutes les étapes juste directement à la parties **installation package** qui va prendre tout ce qu'il y a dans `package.json` et l'installer.
+
+### Fonctionnalités
+
+- **Authentification** : Interface de connexion.
+
+- **Tableau de Bord** : Menu de navigation centralisé.
+
+- **Arène de Jeu** : Échiquier interactif, drag & drop, validation des coups légaux.
+
+- **Feedback Visuel** : Affichage des états (Échec, Mat, Réflexion du bot).
+
+### Architecture
+
+1. Components (`src/components/`) : Briques d'interface réutilisables (UI pure, sans logique métier complexe).
+
+    - **`ChessBoard.jsx`** : 
+        - Encapsule la librairie `chessboardjsx`.
+        - Configure le style (couleurs vert/crème), les images des pièces et l'orientation du plateau.
+        
+    - **`GameControl.jsx`** : 
+        - Affiche le statut du jeu ("Trait aux Blancs") et les boutons d'action (Abandonner, Nulle).
+    - **`Navbar.jsx`** : 
+        - Barre de navigation supérieure. Affiche le pseudo de l'utilisateur connecté et le bouton Déconnexion.
+    - **`Menu.jsx`** : 
+        - Composant pour les gros boutons du Dashboard.
+    - **`Stats.jsx`** : 
+        - Composant d'affichage pour les statistiques (ex: "% Victoires").
+
+
