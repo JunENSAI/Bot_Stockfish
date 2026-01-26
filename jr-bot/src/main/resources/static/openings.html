@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Ouvertures - JRRZF</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .openings-container {
+            display: flex;
+            gap: 20px;
+            width: 90%;
+            margin-top: 20px;
+        }
+        .column {
+            flex: 1;
+            background: #3c3c3c;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .column h2 { text-align: center; border-bottom: 2px solid #555; padding-bottom: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #555; }
+        th { color: #888; font-size: 0.9em; }
+        
+        .move-badge {
+            background: #eee; color: #333; 
+            padding: 5px 10px; border-radius: 4px; font-weight: bold;
+            display: inline-block; width: 30px; text-align: center;
+        }
+        .bar-container { display: flex; height: 6px; border-radius: 3px; overflow: hidden; margin-top: 5px; width: 100%; }
+        .bar-win { background: #4caf50; }
+        .bar-draw { background: #90a4ae; }
+        .bar-loss { background: #e57373; }
+        .stats-text { font-size: 0.8em; color: #aaa; margin-top: 2px; }
+    </style>
+</head>
+<body>
+    <button onclick="window.location.href='dashboard.html'" style="position: absolute; top: 20px; left: 20px;">⬅ Dashboard</button>
+    
+    <div style="text-align: center; margin-top: 50px;">
+        <h1>📖 Carnet d'Ouvertures (Historique)</h1>
+        <p style="color: #888;">Analyse basée sur les 5736 parties de <strong>JRRZF</strong></p>
+    </div>
+
+    <div class="openings-container">
+        <div class="column">
+            <h2 style="color: #ebecd0;">Avec les Blancs (1er coup)</h2>
+            <table id="white-table">
+                <thead><tr><th>Coup</th><th>Freq.</th><th>Résultats (G/N/P)</th></tr></thead>
+                <tbody><tr><td colspan="3">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div class="column">
+            <h2 style="color: #666; text-shadow: 0 0 1px #fff;">Avec les Noirs (Réponse)</h2>
+            <table id="black-table">
+                <thead><tr><th>Coup</th><th>Freq.</th><th>Résultats (G/N/P)</th></tr></thead>
+                <tbody><tr><td colspan="3">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/openings.js"></script>
+</body>
+</html>
